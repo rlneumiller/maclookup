@@ -6,8 +6,19 @@ See also:
 
 - https://standards-oui.ieee.org/oui28/mam.csv
 - https://standards-oui.ieee.org/oui36/oui36.csv
+
 ## APP usage
+
+### From commandline:
+
 python mac_lookup.py
+
+### As a service
+
+sudo cp mac_lookup.service /etc/systemd/mac_lookup.service
+sudo systemctl daemon-reload
+sudo systemctl start mac_lookup.service
+sudo systemctl enable mac_lookup.service
 
 ## API Usage
 
