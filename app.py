@@ -1,36 +1,39 @@
 from flask import Flask, request, jsonify
-import yaml
+import csv
 import re
 
 app = Flask(__name__)
 
 # Configuration
 API_KEY = "XXXXX"  # Replace with your actual API key
-YAML_FILE_PATH = "/home/arrel/gits/zephyr-projects/ESP32C3_ble_serial_bridge/assigned_numbers/company_identifiers/company_identifiers.yaml"
+MANID_CSV_PATH = "/home/arrel/gits/maclookup/ieee-oui.csv"
 
-def load_mac_vendor_data(yaml_file_path):
-    """Load MAC vendor data from the YAML file."""
+def load_mac_vendor_data(csv_file_path):
+    """Load MAC vendor data from the CSV file."""
     try:
-        with open(yaml_file_path, 'r') as file:
-            data = yaml.safe_load(file)
+        data = []
+        with open(csv_file_path, 'r') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                data.append(row)
         return data
     except FileNotFoundError:
         return None
 
 def find_mac_vendor(mac, data):
-    """Find the vendor for a given MAC address in the loaded data."""
+    """Find the vendor for a given MAC address in the loaded CSV data."""
     mac = mac.replace('-', '').replace(':', '').lower()
     if len(mac) != 12:
         return None
 
     for item in data:
-        if 'value' in item:
-            # Convert the hex value to a zero-padded 6-byte string (12 hex digits).
-            start = f"{int(str(item['value']), 16):06x}"
+        if 'Assignment' in item:
+            # Convert the assignment (hexadecimal) to a zero-padded 6-byte hex string.
+            start = f"{int(item['Assignment'], 16):06x}"
             if mac.startswith(start):
                 return {
-                    "vendor": item.get('name', 'Unknown'),
-                    "company": item.get('name', 'Unknown'),
+                    "vendor": item.get('Organization Name', 'Unknown'),
+                    "company": item.get('Organization Name', 'Unknown'),
                     "start": start,
                     "end": start + "ff" * (6 - len(start) // 2)
                 }
@@ -54,9 +57,9 @@ def api():
         if not re.match(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$', mac):
             return jsonify({"response_code": "400", "response_message": "Bad Request: Invalid MAC address format"}), 400
 
-        data = load_mac_vendor_data(YAML_FILE_PATH)
+        data = load_mac_vendor_data(MANID_CSV_PATH)
         if data is None:
-            return jsonify({"response_code": "500", "response_message": "Internal Server Error: Could not load YAML file"}), 500
+            return jsonify({"response_code": "500", "response_message": "Internal Server Error: Could not load CSV file"}), 500
 
         vendor_info = find_mac_vendor(mac, data)
 
