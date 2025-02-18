@@ -6,6 +6,8 @@ See also:
 
 - https://standards-oui.ieee.org/oui28/mam.csv
 - https://standards-oui.ieee.org/oui36/oui36.csv
+## APP usage
+python mac_lookup.py
 
 ## API Usage
 
