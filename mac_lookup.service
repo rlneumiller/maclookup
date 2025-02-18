@@ -1,0 +1,12 @@
+[Unit]
+Description=MAC Lookup API
+After=network.target
+
+[Service]
+User=arrel
+WorkingDirectory=/home/arrel/gits/maclookup
+ExecStart=/home/arrel/.venv/bin/python /home/arrel/gits/maclookup/mac_lookup.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

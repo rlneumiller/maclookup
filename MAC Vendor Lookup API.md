@@ -11,16 +11,16 @@ See also:
 
 ### From commandline:
 
+### From commandline:
+
 python mac_lookup.py
 
 ### As a service
 
-```
 sudo cp mac_lookup.service /etc/systemd/mac_lookup.service
 sudo systemctl daemon-reload
 sudo systemctl start mac_lookup.service
 sudo systemctl enable mac_lookup.service
-```
 
 ## API Usage
 
@@ -33,7 +33,7 @@ Powershell: Invoke-RestMethod -Uri "http://192.168.0.100:5000/?cmd=mac-lookup&ke
 Bash: curl -X GET "http://localhost:5000/?cmd=mac-lookup&key=XXXXX&m=D8:3B:DA:31:A0:E0"
 
 ### Example Response:
-```
+
 {
 "company": "Dell Inc.",
 "end": "f8b156ffffff",
@@ -44,7 +44,7 @@ Bash: curl -X GET "http://localhost:5000/?cmd=mac-lookup&key=XXXXX&m=D8:3B:DA:31
 "start": "f8b156",
 "vendor": "Dell Inc."
 }
-```
+
 ## API Endpoint:
 
 https://api.localhost/?cmd=mac-lookup&m=AA-BB-CC-DD-EE-FF
