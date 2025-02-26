@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 import csv
 import re
+import socket
+import sys
+import os
 
 app = Flask(__name__)
 
@@ -86,5 +89,16 @@ def api():
     else:
         return jsonify({"response_code": "404", "response_message": "Not Found: Command not found"}), 404
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+def is_port_in_use(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('localhost', port)) == 0
+
+if __name__ == "__main__":
+    port = 5000
+
+    if is_port_in_use(port):
+        print(f"Port {port} is already in use.  Exiting.")
+        sys.exit(1)
+
+    print(f"Starting web API on port {port}")
+    app.run(debug=True, host='0.0.0.0', port=port)
